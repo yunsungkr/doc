@@ -47,7 +47,16 @@
                 <h3>대용량 데이터 파싱</h3>
                 <br/>
                 <div style="text-align:left">
-                    <p style="font-size:25px">- 519Byte * 10,000,000rows = 5.6GB</p>
+                    <p style="font-size:25px">- Type 1. Master data </p>
+                    <p style="font-size:25px">-  하향식 테이블 row 2,000,000 2시간(row별 value가 1개)</p>
+                    <p style="font-size:25px">-  ui에서 view형태와 동일하여 select가 용이</p>
+                    
+                    <p style="font-size:25px">-  수평식 테이블 row 5,000 11분(row별 value가 200개 * 2개테이블, 400개 value)</p>
+                    <p style="font-size:25px">-  ui에서 view형태와 sync를 위해 unpivot</p>
+                    <p style="font-size:25px">-  server cpu 활용</p>
+                    
+                    <p style="font-size:25px">- Type 2. Child data 500Byte * 16,000,000rows = 7.45GB</p>
+                    
                 </div>
             </section>            
         </div>
