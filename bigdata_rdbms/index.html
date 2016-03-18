@@ -34,31 +34,95 @@
 
             <section>
                 <h3>Why?</h3>
-                <br/>
                 <div style="text-align:left">
-                    <p style="font-size:25px">1. 대용량 데이터 파싱</p>
-                    <p style="font-size:25px">2. 응답속도</p>
-                    <p style="font-size:25px">3. 성능</p>
-                    <p style="font-size:25px">4. 이슈</p>
+                    <p>1. Data Type</p>
+                    <p>2. 응답속도</p>
+                    <p>3. 성능</p>
+                    <p>4. 이슈</p>
                 </div>
             </section>
-            
             <section>
-                <h3>대용량 데이터 파싱</h3>
-                <br/>
-                <div style="text-align:left">
-                    <p style="font-size:25px">- Type 1. Master data </p>
-                    <p style="font-size:25px">-  하향식 테이블 row 2,000,000 2시간(row별 value가 1개)</p>
-                    <p style="font-size:25px">-  ui에서 view형태와 동일하여 select가 용이</p>
-                    
-                    <p style="font-size:25px">-  수평식 테이블 row 5,000 11분(row별 value가 200개 * 2개테이블, 400개 value)</p>
-                    <p style="font-size:25px">-  ui에서 view형태와 sync를 위해 unpivot</p>
-                    <p style="font-size:25px">-  server cpu 활용</p>
-                    
-                    <p style="font-size:25px">- Type 2. Child data 500Byte * 16,000,000rows = 7.45GB</p>
-                    
-                </div>
-            </section>            
+                <h3>Key, Value, Value, Value...</h3>
+                <p>400 values, 3KB * 5,000rows = 15MB</p>
+                <br />
+					<table>
+                        <tbody class="fragment">
+                            <tr>
+								<td>하향식</td>
+								<td>2,000,000</td>
+                                <td>2시간</td>
+                                <td></td>
+							</tr>
+							<tr>
+								<td>수평식</td>
+								<td>5,000</td>
+                                <td>11분</td>
+                                <td>clob 7분</td>
+							</tr>
+                        </tbody>
+					</table>
+            </section>
+            <section>
+                <h3>Large Text File</h3>
+                <p>500Byte * 16,000,000rows = 7.45GB</p>
+            </section>
+            <section>
+                <p style="font-size:50px">Conventional path load vs. Direct path load</p>
+                <table>
+                    <thead>
+                        <tr>
+							<th>Type</th>
+							<th>Lock(commit)</th>
+                            <th>동시성</th>
+						</tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+							<td>Conventional</td>
+							<td>Row</td>
+                            <td>DML 가능</td>
+						</tr>
+						<tr>
+							<td>Direct</td>
+							<td>Talbe</td>
+                            <td>DML 불가</td>
+						</tr>
+                    </tbody>
+				</table>
+            </section>
+            <section>
+                <h3>.NET 메모리 제한</h3>
+                <table>
+                    <thead>
+                        <tr>
+							<th>x86</th>
+							<th>x64</th>
+						</tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+							<td>2GB</td>
+							<td> - </td>
+						</tr>
+                    </tbody>
+				</table>
+            <section>
+                <h3>DataTable vs. IDataReader</h3>
+                <table>
+                    <thead>
+                        <tr>
+							<th>x86</th>
+							<th>x64</th>
+						</tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+							<td>2GB</td>
+							<td> - </td>
+						</tr>
+                    </tbody>
+				</table>
+            </section>
         </div>
     </div>
     <script src="../reveal/lib/js/head.min.js"></script>
