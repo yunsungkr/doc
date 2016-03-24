@@ -65,7 +65,7 @@
             </section>
             <section>
                 <h3>Large Text File</h3>
-                <p>500Byte * 16,000,000rows = 7.45GB</p>
+                <p>300MB, 500Byte * 16,000,000rows = 7.45GB</p>
             </section>
             <section>
                 <p style="font-size:50px">Conventional path load vs. Direct path load</p>
@@ -92,18 +92,25 @@
 				</table>
             </section>
             <section>
-                <p style="font-size:50px">.NET Memory limit</p>
+                <p style="font-size:50px">GC Heap limit</p>
                 <table>
                     <thead>
                         <tr>
+                            <th>.NET</th>
 							<th>x86</th>
 							<th>x64</th>
 						</tr>
                     </thead>
                     <tbody>
                         <tr>
+                            <td>v4.0</td>
 							<td>2GB</td>
-							<td>8TB</td>
+							<td style="text-align:center">-</td>
+						</tr>
+                        <tr>
+                            <td>v4.5</td>
+							<td style="text-align:center">-</td>
+							<td style="text-align:center">-</td>
 						</tr>
                     </tbody>
 				</table>
