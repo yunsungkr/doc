@@ -91,6 +91,30 @@
                     </tbody>
 				</table>
             </section>
+			<section data-markdown>
+				<script type="text/template">
+					Direct path load Hint DML
+					```
+					INSERT /** append_values */ INTO DATA_TABLE
+					```
+				</script>
+			</section>       
+            <section data-markdown>
+				<script type="text/template">
+					Oracle.DataAccess.Client.OracleBulkCopy
+					```
+using (Oracle.DataAccess.Client.OracleBulkCopy bulkcopy = new Oracle.DataAccess.Client.OracleBulkCopy(this.GetConnectionUnManaged()))
+{
+    bulkcopy.BulkCopyTimeout = 0;
+    bulkcopy.DestinationTableName = TableName;
+    // DataTable
+    bulkcopy.WriteToServer(DataTable table);
+    // IDataReader
+    bulkcopy.WriteToServer(IDataReader reader);
+}
+					```
+				</script>
+            </section>
             <section>
                 <p style="font-size:50px">GC Heap limit</p>
                 <table>
