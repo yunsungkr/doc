@@ -78,7 +78,7 @@
                         <tr>
 							<th>Type</th>
 							<th>Lock(commit)</th>
-                            <th>동시성</th>
+                            <th>접근성</th>
 						</tr>
                     </thead>
                     <tbody>
@@ -95,18 +95,15 @@
                     </tbody>
 				</table>
             </section>
-			<section data-markdown>
-				<script type="text/template">
-					Direct path load DML Hint
-					```
-					INSERT /** append_values */ INTO DATA_TABLE
-					```
-				</script>
+			<section>
+                <p>Direct path load DML Hint</p>
+                <pre><code class="hljs" data-trim contenteditable>
+INSERT /** append_values */ INTO DATA_TABLE                
+                </code></pre>
 			</section>       
-            <section data-markdown>
-				<script type="text/template">
-					Oracle.DataAccess.Client.OracleBulkCopy
-					```
+            <section>
+                <p>Oracle.DataAccess.Client.OracleBulkCopy</p>
+					<pre><code class="hljs" data-trim contenteditable>
 using (Oracle.DataAccess.Client.OracleBulkCopy bulkcopy = new Oracle.DataAccess.Client.OracleBulkCopy(this.GetConnectionUnManaged()))
 {
     bulkcopy.BulkCopyTimeout = 0;
@@ -116,26 +113,52 @@ using (Oracle.DataAccess.Client.OracleBulkCopy bulkcopy = new Oracle.DataAccess.
     // IDataReader
     bulkcopy.WriteToServer(IDataReader reader);
 }
-					```
-				</script>
+					</code></pre>
             </section>
             <section>
-                <p style="font-size:50px">GC Heap limit</p>
-                <table>
-                    <thead>
-                        <tr>
-                            <th style="text-align:center">x86</th>
-							<th style="text-align:center">x64</th>
-						</tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td style="text-align:center">2GB</td>
-							<td style="text-align:center">128TB</td>
-						</tr>
-                    </tbody>
-				</table>
+                <h3>Memory Limit</h3>
+                    <ul>
+						<li>Virtual Memory</li>
+                        <ul>
+                            <li>x86 : 2GB</li>
+                            <li>x64 : 128TB</li>
+                        </ul>
+					</ul>
+                <p><a href="https://msdn.microsoft.com/ko-kr/library/windows/desktop/aa366778(v=vs.85).aspx#memory_limits">Memory Limits</a> for Windows.</p>
             </section>
+            
+            <section>
+                <h3>Memory Limit</h3>
+                    <ul>
+						<li>LargeAddressAware(for x86)</li>
+                        <ul>
+                            <li>Post-Build event</li>
+                        </ul>
+                        <pre><code class="hljs" data-trim contenteditable>
+call "$(DevEnvDir)..\Tools\vsvars32.bat"
+editbin /largeaddressaware "$(TargetPath)"
+                        </code></pre>
+                    </ul>
+                
+                <p>Reference <a href="http://softwaremaniacs.org/soft/highlight/en/description/">link</a>.</p>
+            </section>
+
+            <section>
+                <h3>Memory Limit</h3>
+                    <ul>
+                        <li>Large Object Size Limit 2GB</li>
+						<li>gcAllowVeryLargeObjects(for x64, .net4.5)</li>
+                        <ul>
+                            <li>app.config</li>
+                        </ul>
+                        <pre><code class="hljs" data-trim contenteditable>
+&lt;runtime&gt;
+    &lt;gcAllowVeryLargeObjects enabled="false"/&gt;
+&lt;/runtime&gt;
+                        </code></pre>
+					</ul>
+            </section>
+            
             <section>
                 <p style="font-size:50px">DataTable vs. IDataReader</p>
                 <table>
