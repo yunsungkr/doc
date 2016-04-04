@@ -43,68 +43,74 @@
                 </div>
             </section>
             <section>
-                <h3>Small Text File</h3>
-                <p>'Key, Value, Value, Value...'</p>
-                <p>400 values, 3KB * 5,000rows = 15MB</p>
-                <br />
-					<table>
+                <section>
+                    <h3>Small Text File</h3>
+                    <p>'Key, Value, Value, Value...'</p>
+                    <p>400 values, 3KB * 5,000rows = 15MB</p>
+                    <br />
+                        <table>
+                            <tbody>
+                                <tr>
+                                    <td>PIVOT</td>
+                                    <td>2,000,000</td>
+                                    <td style="text-align:right">2시간</td>
+                                </tr>
+                                <tr>
+                                    <td>UNPIVOT</td>
+                                    <td>5,000</td>
+                                    <td style="text-align:right">11분</td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                    <td style="text-align:right">7분</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                </section>
+                <section>
+                    <h3>Large Text File</h3>
+                    <p>300MB, 500Byte * 16,000,000rows = 7.45GB</p>
+                </section>    
+            </section>
+            <section>
+                <section>
+                    <p style="font-size:50px">Conventional path load vs. Direct path load</p>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>Lock</th>
+                                <th>DML</th>
+                                <th>Transaction</th>
+                            </tr>
+                        </thead>
                         <tbody>
                             <tr>
-								<td>PIVOT</td>
-								<td>2,000,000</td>
-                                <td  style="text-align:right">2시간</td>
-							</tr>
-							<tr>
-								<td>UNPIVOT</td>
-								<td>5,000</td>
-                                <td style="text-align:right">11분</td>
-							</tr>
+                                <td>Conventional</td>
+                                <td>Row</td>
+                                <td style="text-align:center">O</td>
+                                <td style="text-align:center">O</td>
+                            </tr>
                             <tr>
-								<td></td>
-								<td></td>
-                                <td style="text-align:right">7분</td>
-							</tr>
+                                <td>Direct</td>
+                                <td>Talbe</td>
+                                <td style="text-align:center">X</td>
+                                <td style="text-align:center">X</td>
+                            </tr>
                         </tbody>
-					</table>
-            </section>
-            <section>
-                <h3>Large Text File</h3>
-                <p>300MB, 500Byte * 16,000,000rows = 7.45GB</p>
-            </section>
-            <section>
-                <p style="font-size:50px">Conventional path load vs. Direct path load</p>
-                <table>
-                    <thead>
-                        <tr>
-							<th>Type</th>
-							<th>Lock(commit)</th>
-                            <th>접근성</th>
-						</tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-							<td>Conventional</td>
-							<td>Row</td>
-                            <td>DML 가능</td>
-						</tr>
-						<tr>
-							<td>Direct</td>
-							<td>Talbe</td>
-                            <td>DML 불가</td>
-						</tr>
-                    </tbody>
-				</table>
-            </section>
-			<section>
-                <p>Direct path load DML Hint</p>
-                <pre><code class="hljs" data-trim contenteditable>
-INSERT /** append_values */ INTO DATA_TABLE                
-                </code></pre>
-			</section>       
-            <section>
-                <p>Oracle.DataAccess.Client.OracleBulkCopy</p>
-					<pre><code class="hljs" data-trim contenteditable>
-using (Oracle.DataAccess.Client.OracleBulkCopy bulkcopy = new Oracle.DataAccess.Client.OracleBulkCopy(this.GetConnectionUnManaged()))
+                    </table>
+                </section>
+                <section>
+                    <p style="font-size:50px">Direct path load DML Hint</p>
+                    <pre><code class="hljs" data-trim contenteditable>
+    INSERT /** append_values */ INTO DATA_TABLE                
+                    </code></pre>
+                </section>       
+                <section>
+                    <p style="font-size:50px">Oracle.DataAccess.Client.OracleBulkCopy</p>
+                        <pre><code class="hljs" data-trim contenteditable>
+using (Oracle.DataAccess.Client.OracleBulkCopy bulkcopy = new Oracle.DataAccess.Client.OracleBulkCopy(GetConnection()))
 {
     bulkcopy.BulkCopyTimeout = 0;
     bulkcopy.DestinationTableName = TableName;
@@ -113,69 +119,146 @@ using (Oracle.DataAccess.Client.OracleBulkCopy bulkcopy = new Oracle.DataAccess.
     // IDataReader
     bulkcopy.WriteToServer(IDataReader reader);
 }
-					</code></pre>
-            </section>
-            <section>
-                <h3>Memory Limit</h3>
-                    <ul>
-						<li>Virtual Memory</li>
-                        <ul>
-                            <li>x86 : 2GB</li>
-                            <li>x64 : 128TB</li>
-                        </ul>
-					</ul>
-                <p><a href="https://msdn.microsoft.com/ko-kr/library/windows/desktop/aa366778(v=vs.85).aspx#memory_limits">Memory Limits</a> for Windows.</p>
+                        </code></pre>
+                </section>
             </section>
             
             <section>
-                <h3>Memory Limit</h3>
-                    <ul>
-						<li>LargeAddressAware(for x86)</li>
+                <section>
+                    <h3>Memory Limit</h3>
                         <ul>
-                            <li>Post-Build event</li>
+                            <li>Virtual Memory</li>
+                            <ul>
+                                <li>x86 : 2GB</li>
+                                <li>x64 : 128TB</li>
+                            </ul>
                         </ul>
-                        <pre><code class="hljs" data-trim contenteditable>
+                    <p><a href="https://msdn.microsoft.com/ko-kr/library/windows/desktop/aa366778(v=vs.85).aspx#memory_limits">Memory Limits</a> for Windows.</p>
+                </section>
+
+                <section>
+                    <h3>Memory Limit</h3>
+                        <ul>
+                            <li>LargeAddressAware(for x86)</li>
+                            <ul>
+                                <li>Post-Build event</li>
+                            </ul>
+                            <pre><code class="hljs" data-trim contenteditable>
 call "$(DevEnvDir)..\Tools\vsvars32.bat"
 editbin /largeaddressaware "$(TargetPath)"
-                        </code></pre>
-                    </ul>
-                
-                <p>Reference <a href="http://softwaremaniacs.org/soft/highlight/en/description/">link</a>.</p>
-            </section>
-
-            <section>
-                <h3>Memory Limit</h3>
-                    <ul>
-                        <li>Large Object Size Limit 2GB</li>
-						<li>gcAllowVeryLargeObjects(for x64, .net4.5)</li>
-                        <ul>
-                            <li>app.config</li>
+                            </code></pre>
                         </ul>
-                        <pre><code class="hljs" data-trim contenteditable>
+
+                    <p>Reference <a href="http://softwaremaniacs.org/soft/highlight/en/description/">link</a>.</p>
+                </section>
+
+                <section>
+                    <h3>Memory Limit</h3>
+                        <ul>
+                            <li>Large Object Size Limit 2GB</li>
+                            <li>gcAllowVeryLargeObjects(for x64, .net4.5)</li>
+                            <ul>
+                                <li>app.config</li>
+                            </ul>
+                            <pre><code class="hljs" data-trim contenteditable>
 &lt;runtime&gt;
     &lt;gcAllowVeryLargeObjects enabled="false"/&gt;
 &lt;/runtime&gt;
-                        </code></pre>
-					</ul>
+                            </code></pre>
+                        </ul>
+                </section>
             </section>
             
             <section>
-                <p style="font-size:50px">DataTable vs. IDataReader</p>
-                <table>
-                    <thead>
-                        <tr>
-							<th>x86</th>
-							<th>x64</th>
-						</tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-							<td>2GB</td>
-							<td> - </td>
-						</tr>
-                    </tbody>
-				</table>
+                <section>
+                    <p style="font-size:50px">DataTable vs. DataReader</p>
+                    <ul>
+                        <li>ReadOnly</li>
+                        <li>Cache</li>
+                        <li>Data Handling</li>
+                    </ul>
+                </section>
+                <section>
+                    <p>Implement IDataReader</p>
+                        <pre><code class="hljs" data-trim contenteditable>
+public abstract class CustomReader&lt;T&gt; : IDataReader {
+    public StreamReader FileReader { get; set; }
+    public T LineData { get; set; }
+    private PropertyInfo[] _propertis = null;
+
+    public abstract bool Read();
+
+    public object GetValue(int i) {
+        return GetPropertyValue(i);
+    }
+    private object GetPropertyValue(int i) {
+        return _propertis[i].GetValue(LineData, null);
+    }
+}
+                        </code></pre>
+                </section>
+                <section>
+                    <p>Inheritance CustomReader</p>
+                        <pre><code class="hljs" data-trim contenteditable>
+public class ADataReader : CustomReader&lt;A&gt; {
+    public override bool Read() {
+        var result = !FileReader.EndOfStream;
+        if (result) {
+            string strLine = FileReader.ReadLine();
+            // do something
+        }
+        return result;
+    }
+}
+                        </code></pre>
+                </section>
+                <section>
+                    <p style="font-size:50px">OracleBulkCopy.BatchSize</p>
+                        <ul>
+                            <li>Commit(Index rebuild)</li>
+                        </ul>
+                        <pre><code class="hljs" data-trim contenteditable>
+using (Oracle.DataAccess.Client.OracleBulkCopy bulkcopy = new Oracle.DataAccess.Client.OracleBulkCopy(GetConnection()))
+{
+    bulkcopy.BulkCopyTimeout = 0;
+    bulkcopy.DestinationTableName = TableName;
+    bulkcopy.BatchSize = 3,000,000;
+    bulkcopy.WriteToServer(reader);
+}
+                        </code></pre>
+                </section>
+                <section>
+                    <h3>Performance Monitor</h3>
+                    <img width="" height="" data-src="img/perfmon2.png" alt="Performance Monitor">
+                </section>
             </section>
+            
+            
+            <section>
+                <h3>Direct path load Restrictions</h3>
+                <ul>
+                    <li>Data duplicate(fail)</li>
+                    <li>partition</li>
+                    <li>index rebuil</li>
+                </ul>
+            </section>
+            
+            <section>
+                <section>
+                    <h3>Tips</h3>
+                </section>
+                <section>
+                    <h3>Regex</h3>
+                    <p><a href="https://regex101.com/">link</a></p>
+                </section>
+                <section>
+                    <h3>Generic Interface</h3>
+                </section>
+                <section>
+                    <h3>wpf print</h3>
+                </section>
+            </section>
+                           
         </div>
     </div>
     <script src="../reveal/lib/js/head.min.js"></script>
