@@ -36,13 +36,17 @@
                 <h3>목차</h3>
                 <div style="text-align:left">
                     <p>1. Data Type</p>
-                    <p>2. API</p>
-                    <p>3. 이슈</p>
-                    <p>4. 모니터링</p>
-                    <p>5. 그밖의 Tips</p>
+                    <p>2. Oracle Load, ODP.NET API</p>
+                    <p>3. Memory Limit</p>
+                    <p>4. Implementation</p>
+                    <p>5. Direct Path Load</p>
+                    <p>6. 그밖의 Tips</p>
                 </div>
             </section>
             <section>
+                <section>
+                    <h3>Data Type</h3>
+                </section>
                 <section>
                     <h3>Small Text File</h3>
                     <p>'Key, Value, Value, Value...'</p>
@@ -52,17 +56,17 @@
                             <tbody>
                                 <tr>
                                     <td>PIVOT</td>
-                                    <td>2,000,000</td>
+                                    <td style="text-align:right">2,000,000</td>
                                     <td style="text-align:right">2시간</td>
                                 </tr>
                                 <tr>
                                     <td>UNPIVOT</td>
-                                    <td>5,000</td>
+                                    <td style="text-align:right">5,000</td>
                                     <td style="text-align:right">11분</td>
                                 </tr>
                                 <tr>
-                                    <td></td>
-                                    <td></td>
+                                    <td>UNPIVOT(clob)</td>
+                                    <td style="text-align:right">1</td>
                                     <td style="text-align:right">7분</td>
                                 </tr>
                             </tbody>
@@ -74,6 +78,9 @@
                 </section>    
             </section>
             <section>
+                <section>
+                    <h3>Oracle Load, ODP.NET API</h3>
+                </section>
                 <section>
                     <p style="font-size:50px">Conventional path load vs. Direct path load</p>
                     <table>
@@ -126,56 +133,53 @@ using (Oracle.DataAccess.Client.OracleBulkCopy bulkcopy = new Oracle.DataAccess.
             <section>
                 <section>
                     <h3>Memory Limit</h3>
-                        <ul>
-                            <li>Virtual Memory</li>
-                            <ul>
-                                <li>x86 : 2GB</li>
-                                <li>x64 : 128TB</li>
-                            </ul>
-                        </ul>
+                </section>
+                <section>
+                    <h3>Virtual Memory</h3>
+                    <ul>
+                        <li>x86 : 2GB</li>
+                        <li>x64 : 128TB</li>
+                    </ul>
                     <p><a href="https://msdn.microsoft.com/ko-kr/library/windows/desktop/aa366778(v=vs.85).aspx#memory_limits">Memory Limits</a> for Windows.</p>
                 </section>
 
                 <section>
-                    <h3>Memory Limit</h3>
-                        <ul>
-                            <li>LargeAddressAware(for x86)</li>
-                            <ul>
-                                <li>Post-Build event</li>
-                            </ul>
-                            <pre><code class="hljs" data-trim contenteditable>
+                    <h3>LargeAddressAware(for x86)</h3>
+                    <ul>
+                        <li>Post-Build event</li>
+                    </ul>
+                    <pre><code class="hljs" data-trim contenteditable>
 call "$(DevEnvDir)..\Tools\vsvars32.bat"
 editbin /largeaddressaware "$(TargetPath)"
-                            </code></pre>
-                        </ul>
+                    </code></pre>
 
                     <p>Reference <a href="http://softwaremaniacs.org/soft/highlight/en/description/">link</a>.</p>
                 </section>
 
                 <section>
-                    <h3>Memory Limit</h3>
-                        <ul>
-                            <li>Large Object Size Limit 2GB</li>
-                            <li>gcAllowVeryLargeObjects(for x64, .net4.5)</li>
-                            <ul>
-                                <li>app.config</li>
-                            </ul>
-                            <pre><code class="hljs" data-trim contenteditable>
+                    <h3>CLR Large Object Size Limit</h3>
+                    <ul>
+                        <li>Array object size limit 2GB</li>
+                        <li>gcAllowVeryLargeObjects(for x64, .net4.5)</li>
+                    </ul>
+                    <pre><code class="hljs" data-trim contenteditable>
 &lt;runtime&gt;
-    &lt;gcAllowVeryLargeObjects enabled="false"/&gt;
+    &lt;gcAllowVeryLargeObjects enabled="true"/&gt;
 &lt;/runtime&gt;
-                            </code></pre>
-                        </ul>
+                    </code></pre>                         
                 </section>
             </section>
             
             <section>
                 <section>
+                    <h3>Implementation</h3>
+                </section>
+                <section>
                     <p style="font-size:50px">DataTable vs. DataReader</p>
                     <ul>
                         <li>ReadOnly</li>
                         <li>Cache</li>
-                        <li>Data Handling</li>
+                        <li>Serialization</li>
                     </ul>
                 </section>
                 <section>
@@ -234,21 +238,75 @@ using (Oracle.DataAccess.Client.OracleBulkCopy bulkcopy = new Oracle.DataAccess.
             </section>
             
             <section>
-                <h3>Direct path load Restrictions</h3>
+                <section>
+                    <h3>Direct path load</h3>
+                </section>
+                <section>
+                <h3>Direct path load Feature</h3>
                 <ul>
-                    <li>Data duplicate(Fail case)</li>
-                    <li>Partition</li>
-                    <li>Index rebuild</li>
+                    <li>Index Rebuild</li>
+                    <li>Index Unusable State</li>
+                    <li>Local Index Partition(Partition Lock)</li>
                 </ul>
-            </section>
-            
-            <section>
+                </section>
+                
+                <section>
                 <h3>MemoryMappedFile</h3>
+                <pre><code class="hljs" data-trim contenteditable>
+ using (MemoryMappedFile mmf = MemoryMappedFile.CreateFromFile(filePath, FileMode.Open, "FULL"))
+            {
+
+                MemoryMappedViewStream mmvs1 = mmf.CreateViewStream(0, firstOffset);
+                MemoryMappedViewStream mmvs2 = mmf.CreateViewStream(firstOffset, harfOffset - firstOffset);
+                MemoryMappedViewStream mmvs3 = mmf.CreateViewStream(harfOffset, lastOffset - harfOffset);
+                MemoryMappedViewStream mmvs4 = mmf.CreateViewStream(lastOffset, f.Length - lastOffset);
+
+                StreamReader reader1 = new StreamReader(mmvs1);
+                StreamReader reader2 = new StreamReader(mmvs2);
+                StreamReader reader3 = new StreamReader(mmvs3);
+                StreamReader reader4 = new StreamReader(mmvs4);
+
+                BulkItem item1 = new BulkItem()
+                {
+                    Reader = new MR3DataReader(filePath, "ICTEST", 1, insertDate, reader1, 1),
+                    TableName = DataSchemeConst.MR3H_TABLE_NAME,
+                    PartitionName = "P_MR3_1"
+                };
+                BulkItem item2 = new BulkItem()
+                {
+                    Reader = new MR3DataReader(filePath, "ICTEST", 1, insertDate, reader2, 2),
+                    TableName = DataSchemeConst.MR3H_TABLE_NAME,
+                    PartitionName = "P_MR3_2"
+                };
+                BulkItem item3 = new BulkItem()
+                {
+                    Reader = new MR3DataReader(filePath, "ICTEST", 1, insertDate, reader3, 3),
+                    TableName = DataSchemeConst.MR3H_TABLE_NAME,
+                    PartitionName = "P_MR3_3"
+                };
+                BulkItem item4 = new BulkItem()
+                {
+                    Reader = new MR3DataReader(filePath, "ICTEST", 1, insertDate, reader4, 4),
+                    TableName = DataSchemeConst.MR3H_TABLE_NAME,
+                    PartitionName = "P_MR3_4",
+                };
+
+                List<BulkItem> lstItem = new List<BulkItem>();
+                lstItem.Add(item1);
+                lstItem.Add(item2);
+                lstItem.Add(item3);
+                lstItem.Add(item4);
+
+                //oracle.ExecuteBulkCopyParallel(lstItem);
+                Parallel.ForEach(lstItem, item =>
+                {
+                    oracle.ExecuteBulkCopy(new List<BulkItem>() { item });
+                });
+                </code></pre>
+                    
+                </section>
             </section>
-            <section>
-                <h3>Direct path load 정리</h3>
-            </section>
-            
+         
             <section>
                 <section>
                     <h3>Tips</h3>
@@ -265,6 +323,12 @@ using (Oracle.DataAccess.Client.OracleBulkCopy bulkcopy = new Oracle.DataAccess.
                 </section>
                 <section>
                     <h3>wpf print</h3>
+                </section>
+            </section>
+            <section>
+                <section>
+                    <h3>End</h3>
+                    <p style="font-size:50px">Reference</p>
                 </section>
             </section>
                            
