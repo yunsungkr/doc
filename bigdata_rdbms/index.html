@@ -111,7 +111,7 @@
                 <section>
                     <p style="font-size:50px">Direct path load DML Hint</p>
                     <pre><code class="hljs" data-trim contenteditable>
-    INSERT /** append_values */ INTO DATA_TABLE                
+INSERT /** append_values */ INTO DATA_TABLE                
                     </code></pre>
                 </section>       
                 <section>
@@ -121,10 +121,10 @@ using (Oracle.DataAccess.Client.OracleBulkCopy bulkcopy = new Oracle.DataAccess.
 {
     bulkcopy.BulkCopyTimeout = 0;
     bulkcopy.DestinationTableName = TableName;
-    // DataTable
-    bulkcopy.WriteToServer(DataTable table);
-    // IDataReader
-    bulkcopy.WriteToServer(IDataReader reader);
+    //bulkcopy.DestinationPartitionName = PartitionName;
+    
+    bulkcopy.WriteToServer(table);
+    //bulkcopy.WriteToServer(reader);
 }
                         </code></pre>
                 </section>
@@ -227,6 +227,7 @@ using (Oracle.DataAccess.Client.OracleBulkCopy bulkcopy = new Oracle.DataAccess.
     bulkcopy.BulkCopyTimeout = 0;
     bulkcopy.DestinationTableName = TableName;
     bulkcopy.BatchSize = 3,000,000;
+    bulkcopy.BulkCopyOptions = OracleBulkCopyOptions.UseInternalTransaction;
     bulkcopy.WriteToServer(reader);
 }
                         </code></pre>
@@ -244,7 +245,7 @@ using (Oracle.DataAccess.Client.OracleBulkCopy bulkcopy = new Oracle.DataAccess.
                 <section>
                 <h3>Direct path load Feature</h3>
                 <ul>
-                    <li>Index Rebuild</li>
+                    <li>Index Rebuild per load(per batch)</li>
                     <li>Index Unusable State</li>
                     <li>Local Index Partition(Partition Lock)</li>
                 </ul>
@@ -253,55 +254,33 @@ using (Oracle.DataAccess.Client.OracleBulkCopy bulkcopy = new Oracle.DataAccess.
                 <section>
                 <h3>MemoryMappedFile</h3>
                 <pre><code class="hljs" data-trim contenteditable>
- using (MemoryMappedFile mmf = MemoryMappedFile.CreateFromFile(filePath, FileMode.Open, "FULL"))
-            {
+using (MemoryMappedFile mmf = MemoryMappedFile.CreateFromFile(filePath, FileMode.Open, "FULL"))
+{
+    MemoryMappedViewStream mmvs1 = mmf.CreateViewStream(0, half);
+    MemoryMappedViewStream mmvs2 = mmf.CreateViewStream(half, end);
 
-                MemoryMappedViewStream mmvs1 = mmf.CreateViewStream(0, firstOffset);
-                MemoryMappedViewStream mmvs2 = mmf.CreateViewStream(firstOffset, harfOffset - firstOffset);
-                MemoryMappedViewStream mmvs3 = mmf.CreateViewStream(harfOffset, lastOffset - harfOffset);
-                MemoryMappedViewStream mmvs4 = mmf.CreateViewStream(lastOffset, f.Length - lastOffset);
+    StreamReader reader1 = new StreamReader(mmvs1);
+    StreamReader reader2 = new StreamReader(mmvs2);
 
-                StreamReader reader1 = new StreamReader(mmvs1);
-                StreamReader reader2 = new StreamReader(mmvs2);
-                StreamReader reader3 = new StreamReader(mmvs3);
-                StreamReader reader4 = new StreamReader(mmvs4);
-
-                BulkItem item1 = new BulkItem()
-                {
-                    Reader = new MR3DataReader(filePath, "ICTEST", 1, insertDate, reader1, 1),
-                    TableName = DataSchemeConst.MR3H_TABLE_NAME,
-                    PartitionName = "P_MR3_1"
-                };
-                BulkItem item2 = new BulkItem()
-                {
-                    Reader = new MR3DataReader(filePath, "ICTEST", 1, insertDate, reader2, 2),
-                    TableName = DataSchemeConst.MR3H_TABLE_NAME,
-                    PartitionName = "P_MR3_2"
-                };
-                BulkItem item3 = new BulkItem()
-                {
-                    Reader = new MR3DataReader(filePath, "ICTEST", 1, insertDate, reader3, 3),
-                    TableName = DataSchemeConst.MR3H_TABLE_NAME,
-                    PartitionName = "P_MR3_3"
-                };
-                BulkItem item4 = new BulkItem()
-                {
-                    Reader = new MR3DataReader(filePath, "ICTEST", 1, insertDate, reader4, 4),
-                    TableName = DataSchemeConst.MR3H_TABLE_NAME,
-                    PartitionName = "P_MR3_4",
-                };
-
-                List<BulkItem> lstItem = new List<BulkItem>();
-                lstItem.Add(item1);
-                lstItem.Add(item2);
-                lstItem.Add(item3);
-                lstItem.Add(item4);
-
-                //oracle.ExecuteBulkCopyParallel(lstItem);
-                Parallel.ForEach(lstItem, item =>
-                {
-                    oracle.ExecuteBulkCopy(new List<BulkItem>() { item });
-                });
+    BulkItem item1 = new BulkItem() {
+        AReader1 = new ADataReader(reader1),
+        TableName = TABLE_NAME,
+        PartitionName = "PARTITION_A"
+    };
+    BulkItem item2 = new BulkItem() {
+        AReader2 = new ADataReader(reader2),
+        TableName = TABLE_NAME,
+        PartitionName = "PARTITION_B"
+    };
+    
+    List&lt;BulkItem&gt; lstItem = new List&lt;BulkItem&gt;();
+    lstItem.Add(item1);
+    lstItem.Add(item2);
+    
+    Parallel.ForEach(lstItem, item => {
+        //
+    });
+    ...
                 </code></pre>
                     
                 </section>
