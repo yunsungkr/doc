@@ -173,7 +173,7 @@ editbin /largeaddressaware "$(TargetPath)"
             
             <section>
                 <section>
-                    <h3>Implementation</h3>
+                    <h3>Parsing Implementation</h3>
                 </section>
                 <section>
                     <p style="font-size:50px">DataTable vs. DataReader</p>
@@ -183,6 +183,14 @@ editbin /largeaddressaware "$(TargetPath)"
                         <li>Serialization</li>
                     </ul>
                 </section>
+                <section>
+                    <p style="font-size:50px">IDataReader 구현의 장점</p>
+                    <ul>
+                        <li>전체 Cache가 불필요</li>
+                        <li>오류 도출 시간</li>
+                        <li>읽는 방식을 변경</li>
+                    </ul>
+                </section>                
                 <section>
                     <p>Implement IDataReader</p>
                         <pre><code class="hljs" data-trim contenteditable>
@@ -212,6 +220,10 @@ public class ADataReader : CustomReader&lt;A&gt; {
             string strLine = FileReader.ReadLine();
             // do something
         }
+        // **return 값이 false가 아니면 
+        //   LineData는 항상 할당이 되어야한다.
+        //   LineData가 null일때 return값이 true면
+        //   base에서 호출되는 GetValue 함수에서 오류가 발생한다.
         return result;
     }
 }
@@ -236,6 +248,13 @@ using (Oracle.DataAccess.Client.OracleBulkCopy bulkcopy = new Oracle.DataAccess.
                 <section>
                     <h3>Performance Monitor</h3>
                     <img width="" height="" data-src="img/perfmon2.png" alt="Performance Monitor">
+                </section>
+                <section>
+                    <h3>운용 결과</h3>
+                    <ul>
+                        <li>단일테이블에 PK가 설정된 상태(Partition X)</li>
+                        <li>작성중 rebuld가 전체 index rebuld인지</li>
+                    </ul>
                 </section>
             </section>
             
