@@ -198,6 +198,10 @@ public abstract class CustomReader&lt;T&gt; : IDataReader {
     public StreamReader FileReader { get; set; }
     public T LineData { get; set; }
     private PropertyInfo[] _propertis = null;
+    
+    public CustomReader() {
+        _propertis = typeof(T).GetProperties();
+    }
 
     public abstract bool Read();
 
@@ -244,6 +248,10 @@ using (Oracle.DataAccess.Client.OracleBulkCopy bulkcopy = new Oracle.DataAccess.
     bulkcopy.WriteToServer(reader);
 }
                         </code></pre>
+                </section>
+                 <section>
+                    <h3></h3>
+                    <img width="" height="" style="border:0" data-src="img/pptgiagram1.png" alt="Read Operation">
                 </section>
                 <section>
                     <h3>Performance Monitor</h3>
@@ -319,7 +327,6 @@ using (MemoryMappedFile mmf = MemoryMappedFile.CreateFromFile(filePath, FileMode
                 </section>
                 <section>
                     <h3>Generic Interface</h3>
-                    <p>&lt;In T&gt;</In></p>
                 </section>
                 <section>
                     <h3>wpf print</h3>
