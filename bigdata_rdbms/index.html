@@ -221,8 +221,9 @@ public class ADataReader : CustomReader&lt;A&gt; {
     public override bool Read() {
         var result = !FileReader.EndOfStream;
         if (result) {
-            string strLine = FileReader.ReadLine();
-            // do something
+            // parsing
+            string[] arrLine = FileReader.ReadLine().Split(' ');
+            this.LineData = new A() { Value1 = arrLine[0], Value2 = arrLine[1] };
         }
         // **return 값이 false가 아니면 
         //   LineData는 항상 할당이 되어야한다.
@@ -250,7 +251,7 @@ using (Oracle.DataAccess.Client.OracleBulkCopy bulkcopy = new Oracle.DataAccess.
                         </code></pre>
                 </section>
                  <section>
-                    <h3></h3>
+                    <p style="font-size:50px">WriteToServer Operation</p>
                     <img width="" height="" style="border:0" data-src="img/pptgiagram1.png" alt="Read Operation">
                 </section>
                 <section>
@@ -258,10 +259,11 @@ using (Oracle.DataAccess.Client.OracleBulkCopy bulkcopy = new Oracle.DataAccess.
                     <img width="" height="" data-src="img/perfmon2.png" alt="Performance Monitor">
                 </section>
                 <section>
-                    <h3>운용 결과</h3>
+                    <h3>운용 현황</h3>
                     <ul>
-                        <li>단일테이블에 PK가 설정된 상태(Partition X)</li>
-                        <li>작성중 rebuld가 전체 index rebuld인지</li>
+                        <li>단일테이블에 PK가 설정된 상태</li>
+                        <li>7분에서 40분까지 느려짐(5억건이상)</li>
+                        <li>RDBMS에서 HADOOP을 고려</li>
                     </ul>
                 </section>
             </section>
@@ -278,39 +280,72 @@ using (Oracle.DataAccess.Client.OracleBulkCopy bulkcopy = new Oracle.DataAccess.
                     <li>Local Index Partition(Partition Lock)</li>
                 </ul>
                 </section>
-                
                 <section>
-                <h3>MemoryMappedFile</h3>
-                <pre><code class="hljs" data-trim contenteditable>
-using (MemoryMappedFile mmf = MemoryMappedFile.CreateFromFile(filePath, FileMode.Open, "FULL"))
-{
-    MemoryMappedViewStream mmvs1 = mmf.CreateViewStream(0, half);
-    MemoryMappedViewStream mmvs2 = mmf.CreateViewStream(half, end);
+                    <p style="font-size:50px">Next Strategy</p>
+                    <img width="" height="" style="border:0" data-src="img/pptgiagram2.png" alt="Next Strategy">
+                </section>
+                <section>
+                    <p style="font-size:50px">Implement</p>
+                    <pre><code class="hljs" data-trim contenteditable>
+public class Rule {
+    public bool IsMatchedRule { get; private set; }
+    public string RuleValue { get; set; }
+    public bool RuleCheck(string line)
+    {
+        IsMatchedRule = line.StartsWith(RuleValue);
+        return IsMatchedRule;
+    }
+}
+public class ADataReader : CustomReader&lt;A&gt; {
+    public Rule ParsingRule { get; set; }
+    public override bool Read()
+    {
+        var result = !FileReader.EndOfStream;
+        if (result)
+        {
+            string[] arrLine = null;
+            string strLine = string.Empty;
+            while (!ParsingRule.IsMatchedRule)
+            {
+                strLine = FileReader.ReadLine();
+                ParsingRule.RuleCheck(strLine);
+            }
+            // parsing
+            arrLine = strLine.Split(' ');
+            this.LineData = new A() { Head = arrLine[0], Value1 = arrLine[1], Value2 = arrLine[2] };
+        }
+        return result;
+    }
+}
+class Program {
+    static void Main(string[] args)
+    {
+        List&lt;Rule&gt; lstRules = new List&lt;Rule&gt;();
+        lstRules.Add(new Rule() { RuleValue = "A" });
+        lstRules.Add(new Rule() { RuleValue = "B" });
+        lstRules.Add(new Rule() { RuleValue = "C" });
 
-    StreamReader reader1 = new StreamReader(mmvs1);
-    StreamReader reader2 = new StreamReader(mmvs2);
-
-    BulkItem item1 = new BulkItem() {
-        AReader1 = new ADataReader(reader1),
-        TableName = TABLE_NAME,
-        PartitionName = "PARTITION_A"
-    };
-    BulkItem item2 = new BulkItem() {
-        AReader2 = new ADataReader(reader2),
-        TableName = TABLE_NAME,
-        PartitionName = "PARTITION_B"
-    };
-    
-    List&lt;BulkItem&gt; lstItem = new List&lt;BulkItem&gt;();
-    lstItem.Add(item1);
-    lstItem.Add(item2);
-    
-    Parallel.ForEach(lstItem, item => {
-        //
-    });
-    ...
+        Parallel.ForEach(lstRules, rule => 
+        {
+            using (FileStream fs = new FileStream("A_Type_File.txt", FileMode.Open, FileAccess.Read, FileShare.Read))
+            {
+                StreamReader sr = new StreamReader(fs);
+                ADataReader a = new ADataReader() { FileReader = sr, ParsingRule = rule };
+            }
+        });
+    }
+}
                 </code></pre>
                     
+                </section>
+                <section>
+                    <h3>운용 예상</h3>
+                    <ul>
+                        <li>데이터 유효성 체크가 안됨(PK X)</li>
+                        <li>데이터 적재만을 우선시한 전략</li>
+                        <li>UI조회, Summary를 위한 별도의 작업 필요</li>
+                        <li>7분기준 작업을 2분으로 단축</li>
+                    </ul>
                 </section>
             </section>
          
