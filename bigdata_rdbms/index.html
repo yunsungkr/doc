@@ -368,7 +368,15 @@ BBB00AA(X)
 public interface IChangeableValue&lt;in R&gt; {
     void SetValue(R val);
 }
+public interface IChangeableValue&lt;in R, out A&gt; {
+    A SetValue(R val);
+}
+public interface ICreateShape&lt;out A&gt; {
+    A CreateShape();
+    void CreateShape(Action&lt;R&gt; callback);
+}
                     </code></pre>                    
+                    <p><a href="https://msdn.microsoft.com/ko-kr/library/dd997386.aspx">Variant Generic Interface</a></p>
                 </section>
                 <section>
                     <h3>Thread Safe Process API</h3>
@@ -379,6 +387,7 @@ public interface IChangeableValue&lt;in R&gt; {
                         <li>Interlocked</li>
                     </ul>
                     <p class="fragment"><a href="https://msdn.microsoft.com/ko-kr/library/system.collections.concurrent(v=vs.110).aspx">System.Collections.Concurrent</a></p>
+                    <p class="fragment">System.Threading</p>
                 </section>
                 <section>
                     <h3>wpf print</h3>
