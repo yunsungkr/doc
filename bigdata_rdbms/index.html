@@ -28,7 +28,7 @@
                 <br />
                 <br />
                 <p>
-                    <small>RDBMS Oracle 대용량 데이터 파싱</small>
+                    <small>Oracle 대용량 데이터 파싱</small>
                 </p>
             </section>
 
@@ -36,11 +36,11 @@
                 <h3>목차</h3>
                 <div style="text-align:left">
                     <p>1. Data Type</p>
-                    <p>2. Oracle Load, ODP.NET API</p>
+                    <p>2. Oracle Data Load, ODP.NET API</p>
                     <p>3. Memory Limit</p>
                     <p>4. Implementation</p>
                     <p>5. Change Strategy</p>
-                    <p>6. 그밖의 Tips</p>
+                    <p>6. Tips</p>
                 </div>
             </section>
             <section>
@@ -60,16 +60,16 @@
             </section>
             <section>
                 <section>
-                    <h3>Oracle Load, ODP.NET API</h3>
+                    <h3>Oracle Data Load, ODP.NET API</h3>
                 </section>
                 <section>
-                    <p style="font-size:50px">Conventional path load vs. Direct path load</p>
+                    <H3>Conventional Path Load vs. Direct Path Load</H3>
                     <table>
                         <thead>
                             <tr>
                                 <th></th>
                                 <th>Lock</th>
-                                <th>DML</th>
+                                <th>DML 동시성</th>
                                 <th>Transaction</th>
                             </tr>
                         </thead>
@@ -90,7 +90,7 @@
                     </table>
                 </section>
                 <section>
-                    <p style="font-size:50px">Direct path load DML Hint</p>
+                    <h3>Direct path load DML Hint</h3>
                     <pre><code class="hljs" data-trim contenteditable>
 INSERT /** append_values */ INTO DATA_TABLE                
                     </code></pre>
@@ -127,14 +127,13 @@ using (Oracle.DataAccess.Client.OracleBulkCopy bulkcopy = new Oracle.DataAccess.
                 <section>
                     <h3>LargeAddressAware(for x86)</h3>
                     <ul>
-                        <li>Post-Build event</li>
+                        <li>큰 주소 처리 허용</li>
                     </ul>
                     <pre><code class="hljs" data-trim contenteditable>
 call "$(DevEnvDir)..\Tools\vsvars32.bat"
 editbin /largeaddressaware "$(TargetPath)"
                     </code></pre>
-
-                    <p>Reference <a href="http://softwaremaniacs.org/soft/highlight/en/description/">link</a>.</p>
+                    <img width="" height="" style="border:0" data-src="img/ppt2.png" alt="dumpbin">
                 </section>
 
                 <section>
@@ -205,10 +204,7 @@ public class ADataReader : CustomReader&lt;A&gt; {
             string[] arrLine = FileReader.ReadLine().Split(' ');
             this.LineData = new A() { Value1 = arrLine[0], Value2 = arrLine[1] };
         }
-        // **return 값이 false가 아니면 
-        //   LineData는 항상 할당이 되어야한다.
-        //   LineData가 null일때 return값이 true면
-        //   base에서 호출되는 GetValue 함수에서 오류가 발생한다.
+        // **return 값이 true면 LinData를 읽었다는 sign이 된다.
         return result;
     }
 }
@@ -242,9 +238,9 @@ using (Oracle.DataAccess.Client.OracleBulkCopy bulkcopy = new Oracle.DataAccess.
                     <h3>운용 현황 및 제약</h3>
                     <ul>
                         <li>단일테이블에 PK가 설정된 상태</li>
-                        <li>API 제한적 기능, DB 권한 제약</li>
                         <li>7분에서 40분까지 느려짐(5억건이상)</li>
                         <li>RDBMS에서 HADOOP을 고려</li>
+                        <li>API 제한적 기능, DB 권한 제약</li>
                     </ul>
                 </section>
             </section>
@@ -361,7 +357,7 @@ public interface ICreateShape&lt;out A&gt; {
                     <p><a href="https://msdn.microsoft.com/ko-kr/library/dd997386.aspx">Variant Generic Interface</a></p>
                 </section>
                 <section>
-                    <h3>Thread Safe Process API</h3>
+                    <h3>Thread Safe Storage API</h3>
                     <ul>
                         <li>ConcurrentBag&lt;T&gt;</li>
                         <li>ConcurrentQueue&lt;T&gt;</li>
@@ -371,15 +367,24 @@ public interface ICreateShape&lt;out A&gt; {
                     <p><a href="https://msdn.microsoft.com/ko-kr/library/system.collections.concurrent(v=vs.110).aspx">System.Collections.Concurrent</a><br/>System.Threading</p>
                 </section>
                 <section>
-                    <h3>wpf print</h3>
+                    <h3>wpf print Batch</h3>
                     <img width="" height="" style="border:0" data-src="img/pptgiagram3.png" alt="WPF Print1">
                 </section>
                 <section>
-                    <h3>wpf print</h3>
+                    <h3>wpf print Batch</h3>
                     <img width="" height="" style="border:0" data-src="img/pptgiagram4.png" alt="WPF Print2">
                 </section>
                 <section>
-                    <h3>wpf print</h3>
+                    <h3>wpf print Batch</h3>
+                    <ul>
+                        <li>DAMONE(Long running) O</li>
+                        <li>Send message(data) X</li>
+                        <li>Shared storage O</li>
+                        <li>Send message O</li>
+                    </ul>
+                </section>
+                <section>
+                    <h3>wpf print Batch</h3>
                     <img width="" height="" style="border:0" data-src="img/pptgiagram5.png" alt="WPF Print2">
                 </section>
                 <section>
