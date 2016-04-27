@@ -24,7 +24,7 @@
     <div class="reveal">
         <div class="slides">
             <section>
-                <h1>대용량 데이터베이스</h1>
+                <h1>대용량 데이터 파싱</h1>
                 <br />
                 <br />
                 <p>
@@ -155,7 +155,7 @@ editbin /largeaddressaware "$(TargetPath)"
                     <h3>Parsing Implementation</h3>
                 </section>
                 <section>
-                    <p style="font-size:50px">DataTable vs. DataReader</p>
+                    <p style="font-size:50px">DataTable vs. IDataReader</p>
                     <ul>
                         <li>ReadOnly</li>
                         <li>Cache</li>
@@ -357,14 +357,19 @@ public interface ICreateShape&lt;out A&gt; {
                     <p><a href="https://msdn.microsoft.com/ko-kr/library/dd997386.aspx">Variant Generic Interface</a></p>
                 </section>
                 <section>
-                    <h3>Thread Safe Storage API</h3>
+                    <h3>Thread Safe Collections API</h3>
                     <ul>
                         <li>ConcurrentBag&lt;T&gt;</li>
                         <li>ConcurrentQueue&lt;T&gt;</li>
+                        <li>ConcurrentStack&lt;T&gt;</li>
                         <li>BlockingCollection&lt;T&gt;</li>
                         <li>Interlocked</li>
                     </ul>
-                    <p><a href="https://msdn.microsoft.com/ko-kr/library/system.collections.concurrent(v=vs.110).aspx">System.Collections.Concurrent</a><br/>System.Threading</p>
+                    <p><a href="https://msdn.microsoft.com/ko-kr/library/dd997305(v=vs.110).aspx">Thread-Safe Collections</a><br/>
+                        <a href="http://www.albahari.com/threading/part5.aspx#_Concurrent_Collections">Concurrent Collections</a>
+                    </p>
+                    
+                    
                 </section>
                 <section>
                     <h3>wpf print Batch</h3>
