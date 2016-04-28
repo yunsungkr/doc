@@ -351,7 +351,7 @@ public interface IChangeableValue&lt;in R, out A&gt; {
 }
 public interface ICreateShape&lt;out A&gt; {
     A CreateShape();
-    void CreateShape(Action&lt;R&gt; callback);
+    void CreateShape(Action&lt;A&gt; callback);
 }
                     </code></pre>                    
                     <p><a href="https://msdn.microsoft.com/ko-kr/library/dd997386.aspx">Variant Generic Interface</a></p>
@@ -363,7 +363,6 @@ public interface ICreateShape&lt;out A&gt; {
                         <li>ConcurrentQueue&lt;T&gt;</li>
                         <li>ConcurrentStack&lt;T&gt;</li>
                         <li>BlockingCollection&lt;T&gt;</li>
-                        <li>Interlocked</li>
                     </ul>
                     <p><a href="https://msdn.microsoft.com/ko-kr/library/dd997305(v=vs.110).aspx">Thread-Safe Collections</a><br/>
                         <a href="http://www.albahari.com/threading/part5.aspx#_Concurrent_Collections">Concurrent Collections</a>
